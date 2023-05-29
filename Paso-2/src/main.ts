@@ -13,7 +13,7 @@ const changeImg = (): void => {
   const cardImg = document.getElementById('card-img');
   if (cardImg && cardImg instanceof HTMLImageElement) {
     cardImg.src =
-      'https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/2.png';
+      'https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/1.png';
   }
 };
 
