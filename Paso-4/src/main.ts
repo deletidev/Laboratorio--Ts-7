@@ -6,13 +6,15 @@ const changeStateCard = (card: HTMLDivElement): void => {
   card.dataset.state = 'front';
 };
 
-//tipar un htmlCollection?
+//cambiar img
 const changeImg = (i: number): void => {
   const cardImg: HTMLCollection = document.getElementsByClassName('card__img');
-  const elemento: HTMLImageElement = cardImg[i] as HTMLImageElement;
-  elemento.src = `https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/${
-    i + 1
-  }.png`;
+  const elemento = cardImg[i];
+  if (elemento && elemento instanceof HTMLImageElement) {
+    elemento.src = `https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/${
+      i + 1
+    }.png`;
+  }
 };
 
 const flipCard = (card: HTMLDivElement, i: number): void => {

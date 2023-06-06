@@ -1,0 +1,98 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.card__perspective {
+  -webkit-perspective: 2000px;
+  perspective: 2000px;
+  width: 50%;
+}
+
+.card {
+  position: relative;
+  /* position: absolute; */
+  top: 0;
+  width: 200px;
+  height: 200px;
+  border: 1.5px solid transparent;
+  border-radius: 20px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+
+  transition-property: border, transform;
+  transition-duration: 0.5s, 0.3s;
+  transition-timing-function: ease;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border: 1.5px solid rgb(10, 87, 164);
+  }
+}
+.card[data-state='front'] {
+  transform: rotateY(-180deg);
+}
+
+.card__back {
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: inherit;
+  background-color: rgb(30, 225, 251);
+  z-index: 1;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.card__front {
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: rgb(251, 191, 245);
+  padding: 1.5rem;
+}
+.card__img {
+  pointer-events: none;
+  width: 100%;
+  display: block;
+}
