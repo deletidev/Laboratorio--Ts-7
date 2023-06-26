@@ -41,7 +41,6 @@ h1 {
 .card__perspective {
   -webkit-perspective: 2000px;
   perspective: 2000px;
-  width: 50%;
 }
 
 .card {
