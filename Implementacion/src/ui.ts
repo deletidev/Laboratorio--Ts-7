@@ -161,24 +161,19 @@ const accionesNoPareja = (
     reproducirSonido('sound-error');
     cartasBocaAbajo(cartaA, cartaB);
     parejaNoEncontrada(tablero, indiceA, indiceB);
-    borroImg(imgA, imgB);
+    setTimeout(() => {
+      borroImg(imgA, imgB);
+    }, 100);
+
     imprimirMovimientos(tablero.movimientos);
   }
 };
 
-//  acciones al hacer click en un carta
-const cartaClick = (
+const dosCartasLevantadasFc = (
   tablero: Tablero,
-  index: number,
-  carta: Element,
   array: Element[],
   imagenes: HTMLCollectionOf<Element>
 ) => {
-  //Miro si la carta es volteable
-  sePuedeVoltearLaCarta(tablero, index)
-    ? revelarCartaAcciones(tablero, imagenes, carta, index)
-    : reproducirSonido('sound-error');
-
   //Si hay dos cartas levantadas ¿son pareja?
   const indiceA = tablero.indiceCartaVolteadaA;
   const indiceB = tablero.indiceCartaVolteadaB;
@@ -195,6 +190,25 @@ const cartaClick = (
           accionesNoPareja(tablero, indiceA, indiceB, array, imagenes);
         }, 500);
   }
+};
+
+//  acciones al hacer click en un carta
+const cartaClick = (
+  tablero: Tablero,
+  index: number,
+  carta: Element,
+  array: Element[],
+  imagenes: HTMLCollectionOf<Element>
+) => {
+  //Miro si la carta es volteable
+  if (sePuedeVoltearLaCarta(tablero, index)) {
+    revelarCartaAcciones(tablero, imagenes, carta, index);
+    dosCartasLevantadasFc(tablero, array, imagenes);
+  } else {
+    reproducirSonido('sound-error');
+  }
+
+  //Miro si la partida está completa
   if (esPartidaCompleta(tablero)) {
     reproducirSonido('sound-win');
     confettiMio();

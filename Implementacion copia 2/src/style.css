@@ -38,6 +38,7 @@ h1 {
 }
 
 .cards {
+  position: relative;
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, minmax(80px, 1fr));
@@ -69,7 +70,7 @@ h1 {
   transform-style: preserve-3d;
   transform: rotateY(0deg);
   transition-property: border, transform;
-  transition-duration: 0.5s, 0.3s;
+  transition-duration: 0.5s, 0.5s;
   transition-timing-function: ease;
 }
 
@@ -160,4 +161,28 @@ h1 {
 .intentos {
   font-size: 1.2rem;
   font-weight: 600;
+}
+
+.mensaje {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  pointer-events: none;
+  text-align: center;
+  background-color: hsla(0, 0%, 100%, 0.55);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.oculto {
+  /* display: none; */
+  opacity: 0;
+  z-index: -1;
 }

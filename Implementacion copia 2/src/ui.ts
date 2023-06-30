@@ -1,33 +1,11 @@
-/* ¿Qué debemos hacer aquí?
-
-Habrá un botón para empezar partida, ese lo que hará es:
-
-Crear el tablero inicial
-Barajar las cartas
-En el HTML tendremos un CSS grid con todas las cartas (boca abajo, src de carta boca abajo) y un atributo data-indice-array en el que tendremos el indice del array al que corresponden, así pues la partida arranca con
-
-Todas las cartas boca abajo.
-Escuchando al evento click de cada carta (cuando el usuario pinche en una leeremos de data-indice-array, la posición del array de la carta).
-En cuanto el usuario pinche en una carta:
-
-Miramos si la carta es volteable (ver motor).
-Si es volteable la voltearemos (cambiamos el src de la imagen), para la imagen sería recomendable crear data-indice-imagen, va a coincidir con el índice del div para pintar la imagen correspondiente al índice del array de cartas.
-Comprobamos si estamos elegiendo una carta o estamos en la segunda.
-Si estamos en la segunda comprobamos si son pareja o no.
-En caso de que si las dejamos fijas.
-En caso de que no esperamos un segundo (setTimeout) y las ponemos boca abajo (reseteamos su estado sin voltear)
-Vuelta a empezar
- */
-import { Tablero, estadoPatida, IdSonidosPartida } from './modelo';
+import { Tablero, IdSonidosPartida, tablero } from './modelo';
 import {
   sePuedeVoltearLaCarta,
   voltearLaCarta,
   sonPareja,
   parejaEncontrada,
   parejaNoEncontrada,
-  borrarPropiedades,
-  esPartidaCompleta,
-  contadorMovimientos
+  esPartidaCompleta
 } from './motor';
 import { confettiMio } from './confetti';
 import sonidoOn from '/sound-high.svg';
@@ -41,6 +19,7 @@ const srcImg = (imagenes: HTMLCollection, tablero: Tablero, index: number) => {
   }
 };
 
+//Dar la vuelta a las cartas
 const cartasBocaAbajo = (...cartas: Element[]): void => {
   cartas.forEach(carta => {
     if (carta && carta instanceof HTMLDivElement) {
@@ -49,12 +28,17 @@ const cartasBocaAbajo = (...cartas: Element[]): void => {
   });
 };
 
-const borroImg = (...imagenes: HTMLImageElement[]): void => {
-  imagenes.forEach(imagen => (imagen.src = ''));
+//Borro img de las cartas
+const borroImg = (...imagenes: Element[]): void => {
+  imagenes.forEach(imagen => {
+    if (imagen instanceof HTMLImageElement) {
+      imagen.src = '';
+    }
+  });
 };
 
-//Dar la vuelta a la card
-const flipCard = (card: Element): void => {
+//Cartas boca Arriba
+const cartaBocaArriba = (card: Element): void => {
   if (card && card instanceof HTMLDivElement) {
     card.dataset.state = 'front';
   }
@@ -68,6 +52,7 @@ const reproducirSonido = (sonido: IdSonidosPartida) => {
   }
 };
 
+//Mutar sonidos
 const muteSonido = (boton: HTMLButtonElement) => {
   //Cambio la img
   const imgBtn = boton.children[0];
@@ -81,23 +66,45 @@ const muteSonido = (boton: HTMLButtonElement) => {
   });
 };
 
+//Quiar el mute a sonidos
 const volumenSonido = (boton: HTMLButtonElement) => {
   //Cambio la img
   const imgBtn = boton.children[0];
   if (imgBtn && imgBtn instanceof HTMLImageElement) {
     imgBtn.src = sonidoOn;
   }
-  //Muteo todos los audios
+  //sonido todos los audios
   const sounds = Array.from(document.querySelectorAll('audio'));
   sounds.forEach(sound => {
     if (sound && sound instanceof HTMLAudioElement) sound.muted = false;
   });
 };
 
+//Imprimir movimientos
 const imprimirMovimientos = (movimientos: number) => {
   const spanMovientos = document.getElementById('intentos-number');
   if (spanMovientos && spanMovientos instanceof HTMLElement) {
     spanMovientos.textContent = movimientos.toString();
+  }
+};
+
+//Mostrar el mensaje
+const mensajeShow = () => {
+  const mensaje = document.getElementById('mensaje');
+  if (mensaje && mensaje instanceof HTMLDivElement) {
+    mensaje.classList.remove('oculto');
+  }
+};
+
+//ocultar el mensaje
+const mensajeHiden = () => {
+  const mensaje = document.getElementById('mensaje');
+  if (
+    mensaje &&
+    mensaje instanceof HTMLDivElement &&
+    !mensaje.classList.contains('oculto')
+  ) {
+    mensaje.classList.add('oculto');
   }
 };
 
@@ -118,23 +125,22 @@ const revelarCartaAcciones = (
   srcImg(imagenes, tablero, index);
 
   //doy la vuelta a la carta
-  flipCard(carta);
+  cartaBocaArriba(carta);
 };
 
+//  acciones ui son pareja
 const accionesPareja = (tablero: Tablero, indiceA: number, indiceB: number) => {
-  //sonido
+  //sonido para escuchar que se de la vuelta a la carta y luego el sonido de pareja
   setTimeout(() => {
     reproducirSonido('sound-match');
   }, 300);
 
   //cambio estado a las cartas, a encontradas
   parejaEncontrada(tablero, indiceA, indiceB);
-
-  //Cambios en el tablero
-  borrarPropiedades(tablero);
-  estadoPatida(tablero, 'CeroCartasLevantadas');
+  imprimirMovimientos(tablero.movimientos);
 };
 
+//  acciones ui No son pareja
 const accionesNoPareja = (
   tablero: Tablero,
   indiceA: number,
@@ -156,26 +162,20 @@ const accionesNoPareja = (
     cartasBocaAbajo(cartaA, cartaB);
     parejaNoEncontrada(tablero, indiceA, indiceB);
     borroImg(imgA, imgB);
-    borrarPropiedades(tablero);
-    estadoPatida(tablero, 'CeroCartasLevantadas');
-    contadorMovimientos(tablero);
     imprimirMovimientos(tablero.movimientos);
   }
 };
 
-const callbackCartaClick = (
+//  acciones al hacer click en un carta
+const cartaClick = (
   tablero: Tablero,
   index: number,
   carta: Element,
   array: Element[],
   imagenes: HTMLCollectionOf<Element>
 ) => {
-  console.log('click');
-  //Aumento movimiento
-
   //Miro si la carta es volteable
-  const esVolteable = sePuedeVoltearLaCarta(tablero, index);
-  esVolteable
+  sePuedeVoltearLaCarta(tablero, index)
     ? revelarCartaAcciones(tablero, imagenes, carta, index)
     : reproducirSonido('sound-error');
 
@@ -189,45 +189,51 @@ const callbackCartaClick = (
     tablero.estadoPartida === 'DosCartasLevantadas'
   ) {
     //miro si son pareja
-    const pareja = sonPareja(tablero, indiceA, indiceB);
-    pareja
+    sonPareja(tablero, indiceA, indiceB)
       ? accionesPareja(tablero, indiceA, indiceB)
       : setTimeout(() => {
           accionesNoPareja(tablero, indiceA, indiceB, array, imagenes);
         }, 500);
   }
-
-  //!partida Completa? no se donde meterlo
   if (esPartidaCompleta(tablero)) {
     reproducirSonido('sound-win');
     confettiMio();
+    mensajeShow();
   }
 };
 
-//Añado eventos click a las cartas
-const cartasEventos = (tablero: Tablero) => {
-  const cartasPintadas = Array.from(document.getElementsByClassName('card'));
+//  Añado eventos a las cartas
+export const prepararPartida = () => {
+  const cartasMesa = Array.from(document.getElementsByClassName('card'));
   const imagenes = document.getElementsByClassName('card__img');
-  console.log(cartasPintadas);
-  // for (const iterator of object) {
-  // }
-  cartasPintadas.forEach((carta, index, array) => {
-    const cartaClick = () =>
-      callbackCartaClick(tablero, index, carta, array, imagenes);
+  cartasMesa.forEach((carta, index, array) => {
     if (carta && carta instanceof HTMLDivElement) {
-      // carta.removeEventListener('click', cartaClick);
-      carta.addEventListener('click', cartaClick);
+      carta.addEventListener('click', () => {
+        if (tablero.estadoPartida !== 'PartidaNoIniciada')
+          cartaClick(tablero, index, carta, array, imagenes);
+      });
     }
   });
 };
 
+//iniciar partida ui
 export const iniciarPartidaUi = (tablero: Tablero) => {
   const cartasMesa = Array.from(document.getElementsByClassName('card'));
+  const htmlImg = document.getElementsByClassName('card__img');
   cartasBocaAbajo(...cartasMesa);
-  cartasEventos(tablero);
   imprimirMovimientos(tablero.movimientos);
+  mensajeHiden();
+
+  //??Esto es necesario
+  if (htmlImg.length !== 0) {
+    const imagenes = Array.from(htmlImg);
+    borroImg(...imagenes);
+  } else {
+    console.error('No se encuentrar elementos con la clase card__img');
+  }
 };
 
+//ui boton sonido
 export const toogleSonido = (boton: HTMLButtonElement) => {
   boton.classList.toggle('mute');
   boton.classList.contains('mute') ? muteSonido(boton) : volumenSonido(boton);

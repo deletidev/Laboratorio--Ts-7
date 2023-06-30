@@ -81,7 +81,7 @@ const crearTableroInicial = (): Tablero => ({
 export let tablero: Tablero = crearTableroInicial();
 
 //iría en modelo?
-export const estadoPatida = (
+export const estadoPartida = (
   tablero: Tablero,
   estadoPatida: EstadoPartida
 ): void => {

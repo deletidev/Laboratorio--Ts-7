@@ -92,30 +92,32 @@ describe('sePuedeVoltearLaCarta', () => {
 describe('voltearLaCarta', () => {
   const newTablero: Tablero = {
     cartas: barajarCartas(...cartas),
-    estadoPartida: 'PartidaNoIniciada',
+    estadoPartida: 'CeroCartasLevantadas',
     movimientos: 0
   };
-  it('Deberia devolver newTablero.indiceCartaVolteadaA = indice', () => {
-    //Arrange
-    const indice = 8;
 
+  it('Deberia devolver UnaCartaLevantada', () => {
+    //Arrange
+    const expected = 'UnaCartaLevantada';
+    const indice = 8;
     //Act
     voltearLaCarta(newTablero, indice);
-    const expected = newTablero.indiceCartaVolteadaA;
+    const result = newTablero.estadoPartida;
 
     //Asssert
-    expect(indice).toBe(expected);
+    expect(result).toBe(expected);
   });
-  it('Deberia devolver newTablero.indiceCartaVolteadaB = indice', () => {
+  it('Deberia devolver DosCartasLevantadas', () => {
     //Arrange
+    const expected = 'DosCartasLevantadas';
     const indice = 10;
 
     //Act
     voltearLaCarta(newTablero, indice);
-    const expected = newTablero.indiceCartaVolteadaB;
+    const result = newTablero.estadoPartida;
 
     //Asssert
-    expect(indice).toBe(expected);
+    expect(result).toBe(expected);
   });
 });
 

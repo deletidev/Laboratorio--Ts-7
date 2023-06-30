@@ -17,10 +17,10 @@ export const barajarCartas = (...cartas: Carta[]): Carta[] => {
   */
 export const sePuedeVoltearLaCarta = (
   tablero: Tablero,
-  indice: number
+  index: number
 ): boolean =>
-  !tablero.cartas[indice].estaVuelta &&
-  tablero.indiceCartaVolteadaB === undefined;
+  tablero.estadoPartida !== 'DosCartasLevantadas' &&
+  !tablero.cartas[index].estaVuelta;
 
 //!test
 export const voltearLaCarta = (tablero: Tablero, indice: number): void => {

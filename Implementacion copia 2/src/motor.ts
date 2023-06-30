@@ -1,7 +1,7 @@
 /*
 En el motor nos va a hacer falta un método para barajar cartas
 */
-import { Carta, Tablero, estadoPatida } from './modelo';
+import { Carta, Tablero, estadoPartida } from './modelo';
 
 export const barajarCartas = (...cartas: Carta[]): Carta[] => {
   for (let i = cartas.length - 1; i > 0; i--) {
@@ -24,14 +24,14 @@ export const sePuedeVoltearLaCarta = (
 
 //!test
 export const voltearLaCarta = (tablero: Tablero, indice: number): void => {
-  if (tablero.indiceCartaVolteadaA === undefined) {
+  if (tablero.estadoPartida === 'CeroCartasLevantadas') {
     tablero.indiceCartaVolteadaA = indice;
     tablero.cartas[indice].estaVuelta = true;
-    estadoPatida(tablero, 'UnaCartaLevantada');
-  } else if (tablero.indiceCartaVolteadaA !== undefined) {
+    estadoPartida(tablero, 'UnaCartaLevantada');
+  } else if (tablero.estadoPartida === 'UnaCartaLevantada') {
     tablero.indiceCartaVolteadaB = indice;
     tablero.cartas[indice].estaVuelta = true;
-    estadoPatida(tablero, 'DosCartasLevantadas');
+    estadoPartida(tablero, 'DosCartasLevantadas');
   }
 };
 
@@ -51,6 +51,10 @@ export const parejaEncontrada = (
 ): void => {
   tablero.cartas[indiceA].encontrada = true;
   tablero.cartas[indiceB].encontrada = true;
+  //Cambios en el tablero
+  borrarPropiedades(tablero);
+  estadoPartida(tablero, 'CeroCartasLevantadas');
+  contadorMovimientos(tablero);
 };
 
 export const parejaNoEncontrada = (
@@ -60,9 +64,11 @@ export const parejaNoEncontrada = (
 ): void => {
   tablero.cartas[indiceA].estaVuelta = false;
   tablero.cartas[indiceB].estaVuelta = false;
+  borrarPropiedades(tablero);
+  estadoPartida(tablero, 'CeroCartasLevantadas');
+  contadorMovimientos(tablero);
 };
 
-//iría en modelo?
 export const borrarPropiedades = (tablero: Tablero): void => {
   delete tablero.indiceCartaVolteadaA;
   delete tablero.indiceCartaVolteadaB;
@@ -72,7 +78,6 @@ export const esPartidaCompleta = (tablero: Tablero): boolean => {
   return tablero.cartas.every(carta => carta.encontrada);
 };
 
-//iría en modelo?
 const reseteoCartas = (tablero: Tablero) => {
   tablero.cartas.forEach(carta => {
     carta.estaVuelta = false;
@@ -83,16 +88,12 @@ const reseteoCartas = (tablero: Tablero) => {
 export const contadorMovimientos = (tablero: Tablero) => ++tablero.movimientos;
 export const resetearMovimientos = (tablero: Tablero) =>
   (tablero.movimientos = 0);
-/*
-  Iniciar partida
-  */
 
+//Iniciar partida
 export const iniciaPartidaMotor = (tablero: Tablero): void => {
   reseteoCartas(tablero);
   resetearMovimientos(tablero);
   borrarPropiedades(tablero);
-  estadoPatida(tablero, 'CeroCartasLevantadas');
-  console.log(tablero.cartas);
-  //!esto asi??
+  estadoPartida(tablero, 'CeroCartasLevantadas');
   tablero.cartas = barajarCartas(...tablero.cartas);
 };

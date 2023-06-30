@@ -1,6 +1,8 @@
 import { tablero } from './modelo';
-import { iniciarPartidaUi, toogleSonido } from './ui';
+import { iniciarPartidaUi, toogleSonido, prepararPartida } from './ui';
 import { iniciaPartidaMotor } from './motor';
+
+document.addEventListener('DOMContentLoaded', prepararPartida);
 
 const iniciaPartidaBtn = document.getElementById('empezar-partida');
 
