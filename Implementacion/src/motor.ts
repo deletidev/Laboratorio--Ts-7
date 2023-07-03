@@ -12,8 +12,7 @@ export const barajarCartas = (...cartas: Carta[]): Carta[] => {
 };
 /*
     Una carta se puede voltear si no está encontrada y no está ya volteada, o no hay dos cartas ya volteadas
-    !tablero.cartas[indice].encontrada, no lo necesito, porque una carta encontrada se queda volteada
-     tablero.indiceCartaVolteadaB === undefined  o  tablero.estadoPartida !== 'DosCartasLevantadas'
+
   */
 export const sePuedeVoltearLaCarta = (
   tablero: Tablero,
@@ -22,7 +21,6 @@ export const sePuedeVoltearLaCarta = (
   tablero.estadoPartida !== 'DosCartasLevantadas' &&
   !tablero.cartas[index].estaVuelta;
 
-//!test
 export const voltearLaCarta = (tablero: Tablero, indice: number): void => {
   if (tablero.estadoPartida === 'CeroCartasLevantadas') {
     tablero.indiceCartaVolteadaA = indice;
@@ -42,7 +40,7 @@ export const sonPareja = (
 ): boolean => tablero.cartas[indiceA].idFoto === tablero.cartas[indiceB].idFoto;
 /*
     Aquí asumimos ya que son pareja, lo que hacemos es marcarlas 
-    como encontradas y //!!comprobar si la partida esta completa., yo no lo he llamado aqui
+    como encontradas 
   */
 export const parejaEncontrada = (
   tablero: Tablero,
