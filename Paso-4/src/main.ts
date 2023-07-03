@@ -27,6 +27,17 @@ for (let i = 0; i < cards.length; i++) {
   if (card && card instanceof HTMLDivElement) {
     card.addEventListener('click', () => {
       flipCard(card, i);
+      const cardsArray = [...cards];
+      const todasLevantadas = cardsArray.every(
+        card => card instanceof HTMLDivElement && card.dataset.state === 'front'
+      );
+      if (todasLevantadas) {
+        setTimeout(() => {
+          for (const card of cards) {
+            if (card instanceof HTMLDivElement) card.dataset.state = 'back';
+          }
+        }, 1000);
+      }
     });
   }
 }
