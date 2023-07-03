@@ -45,23 +45,30 @@ h1 {
 
 .card {
   position: relative;
-  /* position: absolute; */
   top: 0;
   width: 200px;
   height: 200px;
+  z-index: 0;
   border: 1.5px solid transparent;
   border-radius: 20px;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   transform: rotateY(0deg);
-
   transition-property: border, transform;
-  transition-duration: 0.5s, 0.3s;
+  transition-duration: 0.5s, 0.5s;
   transition-timing-function: ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(245, 193, 254);
+  padding: 1rem;
 }
 
 @media (hover: hover) {
   .card:hover {
+    border: 1.5px solid rgb(10, 87, 164);
+  }
+  .card:hover.card::before {
     border: 1.5px solid rgb(10, 87, 164);
   }
 }
@@ -69,29 +76,23 @@ h1 {
   transform: rotateY(-180deg);
 }
 
-.card__back {
+.card::before {
+  content: '';
   pointer-events: none;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+  width: calc(100% + (1.5px * 2));
+  height: calc(100% + (1.5px * 2));
+  top: -1.5px;
+  left: -1.5px;
   border-radius: inherit;
   background-color: rgb(30, 225, 251);
-  z-index: 1;
+  z-index: 10;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-.card__front {
-  pointer-events: none;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background-color: rgb(251, 191, 245);
-  padding: 1.5rem;
-}
+
 .card__img {
   pointer-events: none;
-  width: 100%;
   display: block;
+  max-width: 100%;
 }

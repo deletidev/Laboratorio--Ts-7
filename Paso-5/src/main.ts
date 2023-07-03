@@ -35,15 +35,10 @@ const cards: InfoCard[] = [
 const nameClass = {
   cardContainer: 'card__perspective',
   card: 'card',
-  cardBack: 'card__back',
-  cardFront: 'card__front',
   cardImage: 'card__img'
 };
 
-const createCardImage = (
-  contenedor: HTMLDivElement,
-  cardId: number
-): HTMLImageElement => {
+const createCardImage = (contenedor: HTMLDivElement, cardId: number) => {
   const cardImage = document.createElement('img');
   cardImage.className = nameClass.cardImage;
   cardImage.src = '';
@@ -51,35 +46,9 @@ const createCardImage = (
 
   //Le doy atributo
   cardImage.dataset.indiceId = cardId.toString();
-  console.log(cardImage);
+
   //Lo pongo en el contenedor
   contenedor.appendChild(cardImage);
-
-  //Me devulevo la img
-  return cardImage;
-};
-
-const contentCard = (
-  contenedor: HTMLDivElement,
-  cardId: number
-): HTMLImageElement => {
-  //Creo cardBack
-  const cardBack = document.createElement('div');
-  cardBack.className = nameClass.cardBack;
-
-  //Creo cardFront
-  const cardFront = document.createElement('div');
-  cardFront.className = nameClass.cardFront;
-
-  //añado la imagen vacia a cardFront
-  const cardImg = createCardImage(cardFront, cardId);
-
-  //Los añado a la carta
-  contenedor.appendChild(cardBack);
-  contenedor.appendChild(cardFront);
-
-  //Me devulevo la img para después cambiar src
-  return cardImg;
 };
 
 const changeStateCard = (card: HTMLDivElement): void => {
@@ -89,26 +58,23 @@ const changeStateCard = (card: HTMLDivElement): void => {
 //Cambio src de img
 const changeImg = (indice: number, elemento: HTMLImageElement): void => {
   elemento.src = cards[indice - 1].image;
-  //si no me devolviese la img
-  // const cardImg: HTMLCollection = document.getElementsByClassName('card__img');
-  // const elemento = cardImg[indice - 1];
-  // if (elemento && elemento instanceof HTMLImageElement) {
-  //   elemento.src = `https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/${indice}.png`;
-  // }
 };
 
 //Dar la vuelta a la card
-const flipCard = (card: HTMLDivElement, cardImg: HTMLImageElement): void => {
+const flipCard = (card: HTMLDivElement): void => {
   //animación dar la vuelta
   changeStateCard(card);
 
   //aceder al data indice-id
   const indice = card.dataset.indiceId;
-
-  //cambio la img de la carta
-  indice
-    ? changeImg(parseInt(indice), cardImg)
-    : console.error('El valor de indice de la carta es undefined');
+  const dataIndice = `[data-indice-id = "${indice}"]`;
+  const cardImg = document.querySelector(`img${dataIndice}`);
+  if (cardImg && cardImg instanceof HTMLImageElement) {
+    //cambio la img de la carta
+    indice
+      ? changeImg(parseInt(indice), cardImg)
+      : console.error('El valor de indice de la carta es undefined');
+  }
 };
 
 //Creo la card
@@ -118,21 +84,20 @@ const createCard = (cardObj: InfoCard, container: HTMLDivElement) => {
   card.className = nameClass.card;
 
   const cardId = cardObj.idPhoto;
-  // const cardImg = cardObj.image;
 
   //Le doy atributo
   card.dataset.state = 'back';
   card.dataset.indiceId = cardId.toString();
 
-  //Añado el contenido
-  const cardImg = contentCard(card, cardId);
+  //Añado la imagen
+  createCardImage(card, cardId);
 
   //Añado card a cardContainer
   container.appendChild(card);
 
   //Añado evento de click
   card.addEventListener('click', () => {
-    flipCard(card, cardImg);
+    flipCard(card);
   });
 };
 
