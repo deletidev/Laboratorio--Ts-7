@@ -238,7 +238,6 @@ export const iniciarPartidaUi = (tablero: Tablero) => {
   imprimirMovimientos(tablero.movimientos);
   mensajeHiden();
 
-  //??Esto es necesario
   if (htmlImg.length !== 0) {
     const imagenes = Array.from(htmlImg);
     borroImg(...imagenes);
