@@ -101,7 +101,7 @@ describe('voltearLaCarta', () => {
     const expected = 'UnaCartaLevantada';
     const indice = 8;
     //Act
-    voltearLaCarta(newTablero, indice);
+    voltearLaCarta(indice, newTablero);
     const result = newTablero.estadoPartida;
 
     //Asssert
@@ -113,7 +113,7 @@ describe('voltearLaCarta', () => {
     const indice = 10;
 
     //Act
-    voltearLaCarta(newTablero, indice);
+    voltearLaCarta(indice, newTablero);
     const result = newTablero.estadoPartida;
 
     //Asssert

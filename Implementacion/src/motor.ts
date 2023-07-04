@@ -21,7 +21,7 @@ export const sePuedeVoltearLaCarta = (
   tablero.estadoPartida !== 'DosCartasLevantadas' &&
   !tablero.cartas[index].estaVuelta;
 
-export const voltearLaCarta = (tablero: Tablero, indice: number): void => {
+export const voltearLaCarta = (indice: number, tablero: Tablero): void => {
   if (tablero.estadoPartida === 'CeroCartasLevantadas') {
     tablero.indiceCartaVolteadaA = indice;
     tablero.cartas[indice].estaVuelta = true;

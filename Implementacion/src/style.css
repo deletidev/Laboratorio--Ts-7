@@ -91,9 +91,9 @@ h1 {
 .card[data-state='front'] {
   transform: rotateY(-180deg);
 }
-/* .card[data-state='vuelta'] {
-  transform: rotateY(-360deg);
-} */
+.card[data-state='vuelta'] {
+  transform: rotateY(360deg);
+}
 .card::before {
   content: '';
   pointer-events: none;

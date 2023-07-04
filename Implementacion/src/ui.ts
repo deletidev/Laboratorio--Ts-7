@@ -12,10 +12,11 @@ import sonidoOn from '/sound-high.svg';
 import sonidoOff from '/sound-off.svg';
 
 //Cambio src de img
-const srcImg = (imagenes: HTMLCollection, tablero: Tablero, index: number) => {
-  const imagen = imagenes[index];
-  if (imagen && imagen instanceof HTMLImageElement) {
-    imagen.src = tablero.cartas[index].imagen;
+const srcImg = (indice: number, tablero: Tablero) => {
+  const cardImg = document.querySelector(`img[data-indice-id = "${indice}"]`);
+  console.log(cardImg);
+  if (cardImg && cardImg instanceof HTMLImageElement) {
+    cardImg.src = tablero.cartas[indice].imagen;
   }
 };
 
@@ -111,7 +112,6 @@ const mensajeHiden = () => {
 //  acciones al voltear la carta
 const revelarCartaAcciones = (
   tablero: Tablero,
-  imagenes: HTMLCollectionOf<Element>,
   carta: Element,
   index: number
 ) => {
@@ -119,10 +119,10 @@ const revelarCartaAcciones = (
   reproducirSonido('sound-card');
 
   //apunto la posicion volteada en el tablero
-  voltearLaCarta(tablero, index);
+  voltearLaCarta(index, tablero);
 
   //doy src a la img
-  srcImg(imagenes, tablero, index);
+  srcImg(index, tablero);
 
   //doy la vuelta a la carta
   cartaBocaArriba(carta);
@@ -145,35 +145,25 @@ const accionesNoPareja = (
   tablero: Tablero,
   indiceA: number,
   indiceB: number,
-  cartas: Element[],
-  imagenes: HTMLCollectionOf<Element>
+  cartas: Element[]
 ) => {
   const cartaA = cartas[indiceA];
   const cartaB = cartas[indiceB];
-  const imgA = imagenes[indiceA];
-  const imgB = imagenes[indiceB];
-  if (
-    cartaA instanceof HTMLDivElement &&
-    cartaB instanceof HTMLDivElement &&
-    imgA instanceof HTMLImageElement &&
-    imgB instanceof HTMLImageElement
-  ) {
+  const cardImgA = document.querySelector(`img[data-indice-id = "${indiceA}"]`);
+  const cardImgB = document.querySelector(`img[data-indice-id = "${indiceB}"]`);
+  if (cartaA instanceof HTMLDivElement && cartaB instanceof HTMLDivElement) {
     reproducirSonido('sound-error');
     cartasBocaAbajo(cartaA, cartaB);
     parejaNoEncontrada(tablero, indiceA, indiceB);
     setTimeout(() => {
-      borroImg(imgA, imgB);
+      if (cardImgA && cardImgB) borroImg(cardImgA, cardImgB);
     }, 100);
 
     imprimirMovimientos(tablero.movimientos);
   }
 };
 
-const dosCartasLevantadasFc = (
-  tablero: Tablero,
-  array: Element[],
-  imagenes: HTMLCollectionOf<Element>
-) => {
+const dosCartasLevantadasFc = (tablero: Tablero, array: Element[]) => {
   //Si hay dos cartas levantadas ¿son pareja?
   const indiceA = tablero.indiceCartaVolteadaA;
   const indiceB = tablero.indiceCartaVolteadaB;
@@ -187,7 +177,7 @@ const dosCartasLevantadasFc = (
     sonPareja(tablero, indiceA, indiceB)
       ? accionesPareja(tablero, indiceA, indiceB)
       : setTimeout(() => {
-          accionesNoPareja(tablero, indiceA, indiceB, array, imagenes);
+          accionesNoPareja(tablero, indiceA, indiceB, array);
         }, 500);
   }
 };
@@ -197,34 +187,35 @@ const cartaClick = (
   tablero: Tablero,
   index: number,
   carta: Element,
-  array: Element[],
-  imagenes: HTMLCollectionOf<Element>
+  array: Element[]
 ) => {
   //Miro si la carta es volteable
   if (sePuedeVoltearLaCarta(tablero, index)) {
-    revelarCartaAcciones(tablero, imagenes, carta, index);
-    dosCartasLevantadasFc(tablero, array, imagenes);
+    revelarCartaAcciones(tablero, carta, index);
+    dosCartasLevantadasFc(tablero, array);
   } else {
     reproducirSonido('sound-error');
   }
 
   //Miro si la partida está completa
   if (esPartidaCompleta(tablero)) {
-    reproducirSonido('sound-win');
-    confettiMio();
-    mensajeShow();
+    //tengo setTimeout por duraciones de los sonidos para que no se acoplen o no se oigan
+    setTimeout(() => {
+      reproducirSonido('sound-win');
+      confettiMio();
+      mensajeShow();
+    }, 600);
   }
 };
 
 //  Añado eventos a las cartas
 export const prepararPartida = () => {
   const cartasMesa = Array.from(document.getElementsByClassName('card'));
-  const imagenes = document.getElementsByClassName('card__img');
   cartasMesa.forEach((carta, index, array) => {
     if (carta && carta instanceof HTMLDivElement) {
       carta.addEventListener('click', () => {
         if (tablero.estadoPartida !== 'PartidaNoIniciada')
-          cartaClick(tablero, index, carta, array, imagenes);
+          cartaClick(tablero, index, carta, array);
       });
     }
   });
@@ -241,8 +232,6 @@ export const iniciarPartidaUi = (tablero: Tablero) => {
   if (htmlImg.length !== 0) {
     const imagenes = Array.from(htmlImg);
     borroImg(...imagenes);
-  } else {
-    console.error('No se encuentrar elementos con la clase card__img');
   }
 };
 
