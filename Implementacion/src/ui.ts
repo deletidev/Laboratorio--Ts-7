@@ -64,7 +64,9 @@ const muteSonido = (boton: HTMLButtonElement): void => {
   //Muteo todos los audios
   const sounds = Array.from(document.querySelectorAll('audio'));
   sounds.forEach(sound => {
-    if (sound && sound instanceof HTMLAudioElement) sound.muted = true;
+    if (sound && sound instanceof HTMLAudioElement) {
+      sound.muted = true;
+    }
   });
 };
 
@@ -78,7 +80,9 @@ const volumenSonido = (boton: HTMLButtonElement): void => {
   //sonido todos los audios
   const sounds = Array.from(document.querySelectorAll('audio'));
   sounds.forEach(sound => {
-    if (sound && sound instanceof HTMLAudioElement) sound.muted = false;
+    if (sound && sound instanceof HTMLAudioElement) {
+      sound.muted = false;
+    }
   });
 };
 
@@ -145,6 +149,12 @@ const accionesPareja = (
   imprimirMovimientos(tablero.movimientos);
 };
 
+const tiempoBrorrarImgCartas = (cardImgA: Element, cardImgB: Element) => {
+  setTimeout(() => {
+    borroImg(cardImgA, cardImgB);
+  }, 100);
+};
+
 //  acciones ui No son pareja
 const accionesNoPareja = (
   tablero: Tablero,
@@ -156,14 +166,16 @@ const accionesNoPareja = (
   const cartaB = cartas[indiceB];
   const cardImgA = document.querySelector(`img[data-indice-id = "${indiceA}"]`);
   const cardImgB = document.querySelector(`img[data-indice-id = "${indiceB}"]`);
-  if (cartaA instanceof HTMLDivElement && cartaB instanceof HTMLDivElement) {
+  if (
+    cartaA instanceof HTMLDivElement &&
+    cartaB instanceof HTMLDivElement &&
+    cardImgA &&
+    cardImgB
+  ) {
     reproducirSonido('sound-error');
     cartasBocaAbajo(cartaA, cartaB);
     parejaNoEncontrada(tablero, indiceA, indiceB);
-    setTimeout(() => {
-      if (cardImgA && cardImgB) borroImg(cardImgA, cardImgB);
-    }, 100);
-
+    tiempoBrorrarImgCartas(cardImgA, cardImgB);
     imprimirMovimientos(tablero.movimientos);
   }
 };
@@ -223,7 +235,9 @@ const cartaClick = (
     : reproducirSonido('sound-error');
 
   //Miro si la partida está completa
-  if (esPartidaCompleta(tablero)) esperaAccionesPartidaCompleta();
+  if (esPartidaCompleta(tablero)) {
+    esperaAccionesPartidaCompleta();
+  }
 };
 
 //  Añado eventos a las cartas
@@ -232,8 +246,9 @@ export const prepararPartida = (): void => {
   cartasMesa.forEach((carta, index, array) => {
     if (carta && carta instanceof HTMLDivElement) {
       carta.addEventListener('click', () => {
-        if (tablero.estadoPartida !== 'PartidaNoIniciada')
+        if (tablero.estadoPartida !== 'PartidaNoIniciada') {
           cartaClick(tablero, index, carta, array);
+        }
       });
     }
   });
