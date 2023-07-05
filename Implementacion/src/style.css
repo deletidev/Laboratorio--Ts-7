@@ -78,6 +78,7 @@ h1 {
   justify-content: center;
   background-color: rgb(245, 193, 254);
   padding: 1rem;
+  cursor: pointer;
 }
 
 @media (hover: hover) {
@@ -129,6 +130,7 @@ h1 {
   transition-property: box-shadow, background-color;
   transition-duration: 0.5s;
   transition-timing-function: ease;
+  cursor: pointer;
 }
 .btn:hover {
   box-shadow: 0 0 12px 0 hsla(291, 65%, 60%, 0.78);
@@ -146,6 +148,7 @@ h1 {
   background-color: rgb(245, 193, 254);
   padding: 0.9em 1em;
   border-radius: 8px;
+  cursor: pointer;
 }
 .sound:hover {
   box-shadow: 0 0 12px 0 hsla(291, 65%, 60%, 0.78);
