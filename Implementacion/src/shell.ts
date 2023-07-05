@@ -1,16 +1,12 @@
 import { tablero } from './modelo';
-import { iniciarPartidaUi, toogleSonido, prepararPartida } from './ui';
-import { iniciaPartidaMotor } from './motor';
+import { iniciarPartida, toogleSonido, prepararPartida } from './ui';
 
 document.addEventListener('DOMContentLoaded', prepararPartida);
 
 const iniciaPartidaBtn = document.getElementById('empezar-partida');
 
 iniciaPartidaBtn && iniciaPartidaBtn instanceof HTMLButtonElement
-  ? iniciaPartidaBtn.addEventListener('click', () => {
-      iniciaPartidaMotor(tablero);
-      iniciarPartidaUi(tablero);
-    })
+  ? iniciaPartidaBtn.addEventListener('click', () => iniciarPartida(tablero))
   : console.error('No se encuentra el botón iniciar partida');
 
 const sonidosBtn = document.getElementById('sonidos');

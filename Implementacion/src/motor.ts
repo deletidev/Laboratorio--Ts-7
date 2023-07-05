@@ -21,15 +21,23 @@ export const sePuedeVoltearLaCarta = (
   tablero.estadoPartida !== 'DosCartasLevantadas' &&
   !tablero.cartas[index].estaVuelta;
 
+const vortearPrimeraCarta = (indice: number, tablero: Tablero): void => {
+  tablero.indiceCartaVolteadaA = indice;
+  tablero.cartas[indice].estaVuelta = true;
+  estadoPartida(tablero, 'UnaCartaLevantada');
+};
+
+const voltearSegundaCarta = (indice: number, tablero: Tablero): void => {
+  tablero.indiceCartaVolteadaB = indice;
+  tablero.cartas[indice].estaVuelta = true;
+  estadoPartida(tablero, 'DosCartasLevantadas');
+};
+
 export const voltearLaCarta = (indice: number, tablero: Tablero): void => {
   if (tablero.estadoPartida === 'CeroCartasLevantadas') {
-    tablero.indiceCartaVolteadaA = indice;
-    tablero.cartas[indice].estaVuelta = true;
-    estadoPartida(tablero, 'UnaCartaLevantada');
+    vortearPrimeraCarta(indice, tablero);
   } else if (tablero.estadoPartida === 'UnaCartaLevantada') {
-    tablero.indiceCartaVolteadaB = indice;
-    tablero.cartas[indice].estaVuelta = true;
-    estadoPartida(tablero, 'DosCartasLevantadas');
+    voltearSegundaCarta(indice, tablero);
   }
 };
 
@@ -50,7 +58,7 @@ export const parejaEncontrada = (
   tablero.cartas[indiceA].encontrada = true;
   tablero.cartas[indiceB].encontrada = true;
   //Cambios en el tablero
-  borrarPropiedades(tablero);
+  reseteoIndiceCartas(tablero);
   estadoPartida(tablero, 'CeroCartasLevantadas');
   contadorMovimientos(tablero);
 };
@@ -62,14 +70,14 @@ export const parejaNoEncontrada = (
 ): void => {
   tablero.cartas[indiceA].estaVuelta = false;
   tablero.cartas[indiceB].estaVuelta = false;
-  borrarPropiedades(tablero);
+  reseteoIndiceCartas(tablero);
   estadoPartida(tablero, 'CeroCartasLevantadas');
   contadorMovimientos(tablero);
 };
 
-export const borrarPropiedades = (tablero: Tablero): void => {
-  delete tablero.indiceCartaVolteadaA;
-  delete tablero.indiceCartaVolteadaB;
+export const reseteoIndiceCartas = (tablero: Tablero): void => {
+  tablero.indiceCartaVolteadaA = undefined;
+  tablero.indiceCartaVolteadaB = undefined;
 };
 
 export const esPartidaCompleta = (tablero: Tablero): boolean => {
@@ -91,7 +99,7 @@ export const resetearMovimientos = (tablero: Tablero) =>
 export const iniciaPartidaMotor = (tablero: Tablero): void => {
   reseteoCartas(tablero);
   resetearMovimientos(tablero);
-  borrarPropiedades(tablero);
+  reseteoIndiceCartas(tablero);
   estadoPartida(tablero, 'CeroCartasLevantadas');
   tablero.cartas = barajarCartas(...tablero.cartas);
 };
